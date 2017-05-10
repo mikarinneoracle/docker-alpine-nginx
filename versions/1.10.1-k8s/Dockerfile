@@ -8,6 +8,12 @@ RUN \
   runtime_pkgs="ca-certificates openssl pcre zlib" && \
   apk --update add ${build_pkgs} ${runtime_pkgs} && \
   cd /tmp && \
+  mkdir unzip && \
+  wget https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng/get/08a395c66e42.zip && \
+  unzip 08a395c66e42.zip -d unzip && \
+  ls -la && \
+  ls -la /tmp/unzip && \
+  ls -la /tmp/unzip/nginx-goodies-nginx-sticky-module-ng-08a395c66e42 && \
   wget http://nginx.org/download/nginx-1.10.1.tar.gz && \
   tar xzf nginx-1.10.1.tar.gz && \
   cd /tmp/nginx-1.10.1 && \
@@ -47,8 +53,9 @@ RUN \
     --with-mail_ssl_module \
     --with-file-aio \
     --with-http_v2_module \
-    --with-ipv6 && \
-  make && \
+    --with-ipv6 \
+    --add-module=/tmp/unzip/nginx-goodies-nginx-sticky-module-ng-08a395c66e42 \
+  && make && \
   make install && \
   sed -i -e 's/#access_log  logs\/access.log  main;/access_log \/dev\/stdout;/' -e 's/#error_log  logs\/error.log  notice;/error_log stderr notice;/' /etc/nginx/nginx.conf && \
   adduser -D nginx && \
